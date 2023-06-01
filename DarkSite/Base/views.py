@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.cache import never_cache
 from .models import *
 
@@ -41,7 +41,7 @@ def add_cart(request, pk):
     cart_item = CartItem.objects.create(quantity =1 ,book = book) 
     cart.items.add(cart_item)
         
-    return render(request, 'Base/add_cart.html')
+    return redirect('cart')
 
 def detail_product(request, pk):
     product = Book.objects.get(id = pk)
@@ -77,6 +77,14 @@ def search_feature(request):
         return render(request, 'Base/search.html', {'query':search_query, 'products':products})
     else:
         return render(request, 'Base/search.html',{})
+    
+def delete_cart_item(request , pk):
+    cart = Cart.objects.get(buyer = request.user)
+    cart_item = CartItem.objects.get(id = pk)
+    cart.items.remove(cart_item)
+    
+    return redirect('cart')
+    
 
 
 
